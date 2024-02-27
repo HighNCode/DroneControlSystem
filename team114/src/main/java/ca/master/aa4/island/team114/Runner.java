@@ -13,8 +13,8 @@ public class Runner {
                     .exploring(new File(filename))
                     .withSeed(42L)
                     .startingAt(1, 1, "EAST")
-                    .backBefore(7000)
-                    .withCrew(5)
+                    .backBefore(20000)
+                    .withCrew(3)
                     .storingInto("./outputs")
                     .withName("Island")
                     .fire();
