@@ -292,7 +292,56 @@ public class Explorer implements IExplorerRaid {
 
     @Override
     public String deliverFinalReport() {
-        return "no creek found";
+    	int[] closestPointIndices = new int[2];
+        double shortestDistance = Double.MAX_VALUE;
+        int X = 0;
+    	int Y = 0;
+    	
+    	emergencySitesLoop:
+    	for (int i = 0; i < 52; i++)
+    	{
+            for (int j = 0; j < 52; j++)
+            {
+                if (M[i][j].getterE() != "")
+                {        
+                	X = M[i][j].getterX();
+                	Y = M[i][j].getterY();
+                	break emergencySitesLoop;
+                }
+            }
+        }
+    	
+        for (int i = 0; i < 52; i++) {
+            for (int j = 0; j < 52; j++) {
+            	if (M[i][j].getterC() != "")
+            	{
+            		double distance = Math.abs(X - i) + Math.abs(Y - j);
+
+                    if (distance < shortestDistance && distance != 0)
+                    { // Exclude the starting point itself
+                        shortestDistance = distance;
+                        closestPointIndices[0] = i; // Update with the current point's indices
+                        closestPointIndices[1] = j;
+                    }
+            	}
+            }
+        }
+        
+        logger.info("The nearest creek to the emergency site is {} ", M[closestPointIndices[0]][closestPointIndices[1]].getterC());
+
+        return M[closestPointIndices[0]][closestPointIndices[1]].getterC();
+//        // Assuming M is a 2D array you want to print, with its declaration available in the class
+//        for (int i = 0; i < 52; i++)
+//        { // Assuming M.length is the length of the first dimension
+//            StringBuilder sb = new StringBuilder(); // Create a StringBuilder to concatenate the row elements
+//            for (int j = 0; j < 52; j++)
+//            { // Assuming M[i].length is the length of the second dimension
+//                sb.append((M[i][j]).getterC()).append(" "); // Append each element of the 2D array and a space
+//            }
+//            logger.info(sb.toString()); // Log the entire row
+//        }
+//        
+//        return "no creek found";
     }
 
 }
