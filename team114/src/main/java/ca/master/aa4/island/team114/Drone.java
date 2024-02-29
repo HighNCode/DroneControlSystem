@@ -1,5 +1,7 @@
 package ca.master.aa4.island.team114;
 
+import org.json.JSONObject;
+
 public class Drone {
 	
 	private int X;
@@ -7,7 +9,39 @@ public class Drone {
 	private String H;
 	private int B;
 	
+	private static Drone instance;
+	
+	private DroneMovementStrategy movementStrategy;
+
+    private Drone()
+    {
+        X = 0;
+        Y = 0;
+        H = "";
+        B = 0;
+    }
+
+    // Static method to get the instance of the Drone class
+    public static Drone getInstance()
+    {
+        if (instance == null) {
+            instance = new Drone();
+        }
+        
+        return instance;
+    }
+	
 	// setters
+	
+	public void setterX(int x)
+    {
+    	X = x;
+    }
+    
+    public void setterY(int y)
+    {
+    	Y = y;
+    }
 
     public void setterH(String h)
     {
@@ -39,6 +73,24 @@ public class Drone {
     public int getterB()
     {
     	return B;
+    }
+    
+    public void setMovementStrategy(DroneMovementStrategy movementStrategy) {
+        this.movementStrategy = movementStrategy;
+    }
+
+    public JSONObject performMove(String d) {
+        if (movementStrategy != null) {
+            return movementStrategy.move(this, d);
+        }
+		return null;
+    }
+    
+    public JSONObject performMove() {
+        if (movementStrategy != null) {
+            return movementStrategy.move(this);
+        }
+		return null;
     }
     
     public String nextDirection(String a, String d)

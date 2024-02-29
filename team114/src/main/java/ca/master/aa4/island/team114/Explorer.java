@@ -23,17 +23,43 @@ public class Explorer implements IExplorerRaid {
     private int visitedCount = 0;
     private int boundaryCount = 0;
     
-    private Map[][] M = new Map[52][52];
-    private Drone D = new Drone();
+    Map M;
     
-    public Explorer() {
-        for (int i = 0; i < 52; i++)
-        {
-            for (int j = 0; j < 52; j++)
-            {
-                M[i][j] = new Map();
-            }
-        }
+//    private Drone D = new Drone();
+    
+//    private Drone D = DroneFactory.createDrone(0, 0, "", 0);
+    
+    private Drone D;
+    
+    public Explorer()
+    {
+    	this.D = Drone.getInstance();
+    	
+    	M = new Map.MapBuilder()
+                .width(52)
+                .height(52)
+                .build();
+
+		for (int y = 0; y < 52; y++)
+		{
+		    for (int x = 0; x < 52; x++)
+		    {
+		        M = new Map.MapBuilder()
+		                     .fromMap(M)
+		                     .addCell(x, y, false, "", "")
+		                     .build();
+		    }
+		}
+    	
+//    	this.M = new Map[52][52];
+//   
+//        for (int i = 0; i < 52; i++)
+//        {
+//            for (int j = 0; j < 52; j++)
+//            {
+//                M[i][j] = new Map();
+//            }
+//        }
     }
 
     @Override
@@ -65,42 +91,34 @@ public class Explorer implements IExplorerRaid {
     	
     	else if (actionDecision == 0)
     	{
-    		String action = "echo";
-    		decision.put("action", action);
-            JSONObject parameters = new JSONObject();
-            parameters.put("direction", "S");
-            decision.put("parameters", parameters);
+    		D.setMovementStrategy(new DroneMovementStrategyEcho());
+            decision = D.performMove("S");
             actionDecision = 1;
     	}
     	
     	else if (actionDecision == 1)
     	{
-    		String action = "fly";
-            decision.put("action", action);
-            D.nextDirection(action, D.getterH());
+            D.setMovementStrategy(new DroneMovementStrategyFly());
+            decision = D.performMove();
             actionDecision = 0;
         }
     	
     	else if (actionDecision == 2)
     	{
-    		String action = "heading";
-    		decision.put("action", action);
-            JSONObject parameters = new JSONObject();
-//            String next = D.nextDirection(action, D.getterH());
+    		String d = "";
             
             if (headingCount == 1)
             {
-            	parameters.put("direction", "W");
-            	D.setterH("W");
+            	d = "W";
             }
             	
             else
             {
-            	parameters.put("direction", "S");
-            	D.setterH("S");
+            	d = "S";
             }
-            	
-            decision.put("parameters", parameters);
+            
+            D.setMovementStrategy(new DroneMovementStrategyHeading());
+            decision = D.performMove(d);
             headingCount++;
             
             if (headingCount == 3)
@@ -117,9 +135,12 @@ public class Explorer implements IExplorerRaid {
     	
     	else if (actionDecision == 3)
     	{
-    		String action = "scan";
-            decision.put("action", action);
-            M[D.getterX()][D.getterY()].setterV(true);
+    		D.setMovementStrategy(new DroneMovementStrategyScan());
+            decision = D.performMove();
+
+            Map.Cell C = M.getCell(D.getterX(), D.getterY());            
+            C.setterV(true);
+//            M[D.getterX()][D.getterY()].setterV(true);
             actionDecision = 2;
         }
     	
@@ -127,31 +148,22 @@ public class Explorer implements IExplorerRaid {
     	
     	else if (actionDecision == 4)
     	{
-    		String action = "echo";
-    		decision.put("action", action);
-            JSONObject parameters = new JSONObject();
-            parameters.put("direction", D.nextDirection(action, D.getterH()));
-            decision.put("parameters", parameters);
+            D.setMovementStrategy(new DroneMovementStrategyEcho());
+            decision = D.performMove(D.nextDirection("echo", D.getterH()));
             actionDecision = 5;
     	}
     	
     	else if (actionDecision == 5)
     	{
-    		String action = "fly";
-            decision.put("action", action);
-            D.nextDirection(action, D.getterH());
+    		D.setMovementStrategy(new DroneMovementStrategyFly());
+            decision = D.performMove();
             actionDecision = 7;
     	}
     	
     	else if (actionDecision == 6)
     	{
-    		String action = "heading";
-    		decision.put("action", action);
-            JSONObject parameters = new JSONObject();
-            String next = D.nextDirection(action, D.getterH());
-            parameters.put("direction", next);
-            decision.put("parameters", parameters);
-            D.setterH(next);
+            D.setMovementStrategy(new DroneMovementStrategyHeading());
+            decision = D.performMove(D.nextDirection("heading", D.getterH()));
             headingCount++;
             
             if (headingCount == 3)
@@ -163,10 +175,11 @@ public class Explorer implements IExplorerRaid {
     	
     	else if (actionDecision == 7)
     	{
-    		String action = "scan";
-            decision.put("action", action);
+    		D.setMovementStrategy(new DroneMovementStrategyScan());
+            decision = D.performMove();
+            Map.Cell C = M.getCell(D.getterX(), D.getterY());
             
-            if (M[D.getterX()][D.getterY()].getterV() == true)
+            if (C.getterV() == true)
             {
             	if (visitedCount == 1)
             	{
@@ -189,7 +202,8 @@ public class Explorer implements IExplorerRaid {
             else
             {
             	visitedCount = 2;
-            	M[D.getterX()][D.getterY()].setterV(true);
+                C.setterV(true);
+//            	M[D.getterX()][D.getterY()].setterV(true);
             	actionDecision = 4;
             }
         }
@@ -257,9 +271,13 @@ public class Explorer implements IExplorerRaid {
 	        	for (int x = 0; x < creeksArray.length(); x++)
 	        	{
 	        		String creek = creeksArray.getString(x);
-	        	    M[D.getterX()][D.getterY()].setterC(creek);
-	        	    M[D.getterX()][D.getterY()].setterX(D.getterX());
-	        	    M[D.getterX()][D.getterY()].setterY(D.getterY());
+	        		Map.Cell C = M.getCell(D.getterX(), D.getterY());
+	                C.setterC(creek);
+	                C.setterX(D.getterX());
+	                C.setterY(D.getterY());
+//	        	    M[D.getterX()][D.getterY()].setterC(creek);
+//	        	    M[D.getterX()][D.getterY()].setterX(D.getterX());
+//	        	    M[D.getterX()][D.getterY()].setterY(D.getterY());
 	        	    creekCount++;
 	        	}
 	        }
@@ -271,9 +289,13 @@ public class Explorer implements IExplorerRaid {
 	        	for (int x = 0; x < sitesArray.length(); x++)
 	        	{
 	        		String sites = sitesArray.getString(x);
-	        	    M[D.getterX()][D.getterY()].setterE(sites);
-	        	    M[D.getterX()][D.getterY()].setterX(D.getterX());
-	        	    M[D.getterX()][D.getterY()].setterY(D.getterY());
+	        		Map.Cell C = M.getCell(D.getterX(), D.getterY());
+	        		C.setterC(sites);
+	                C.setterX(D.getterX());
+	                C.setterY(D.getterY());
+//	        	    M[D.getterX()][D.getterY()].setterE(sites);
+//	        	    M[D.getterX()][D.getterY()].setterX(D.getterX());
+//	        	    M[D.getterX()][D.getterY()].setterY(D.getterY());
 	        	    creekCount++;
 	        	}
 	        }
@@ -302,18 +324,22 @@ public class Explorer implements IExplorerRaid {
     	{
             for (int j = 0; j < 52; j++)
             {
-                if (M[i][j].getterE() != "")
+            	Map.Cell C = M.getCell(i, j);
+                if (C.getterE() != "")
                 {        
-                	X = M[i][j].getterX();
-                	Y = M[i][j].getterY();
+                	X = C.getterX();
+                	Y = C.getterY();
                 	break emergencySitesLoop;
                 }
             }
         }
     	
-        for (int i = 0; i < 52; i++) {
-            for (int j = 0; j < 52; j++) {
-            	if (M[i][j].getterC() != "")
+        for (int i = 0; i < 52; i++)
+        {
+            for (int j = 0; j < 52; j++)
+            {
+            	Map.Cell C = M.getCell(i, j);
+            	if (C.getterC() != "")
             	{
             		double distance = Math.abs(X - i) + Math.abs(Y - j);
 
@@ -327,9 +353,10 @@ public class Explorer implements IExplorerRaid {
             }
         }
         
-        logger.info("The nearest creek to the emergency site is {} ", M[closestPointIndices[0]][closestPointIndices[1]].getterC());
+        Map.Cell C = M.getCell(closestPointIndices[0], closestPointIndices[1]);
+        logger.info("The nearest creek to the emergency site is {} ", C.getterC());
 
-        return M[closestPointIndices[0]][closestPointIndices[1]].getterC();
+        return C.getterC();
 //        // Assuming M is a 2D array you want to print, with its declaration available in the class
 //        for (int i = 0; i < 52; i++)
 //        { // Assuming M.length is the length of the first dimension
