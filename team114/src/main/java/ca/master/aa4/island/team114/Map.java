@@ -18,82 +18,25 @@ public class Map {
         this.height = height;
         this.cells = cells;
     }
-
-    // Static inner class for Cell, assuming similar properties to original Map
-    public static class Cell {
-	
-		private int X;
-		private int Y;
-		private boolean V;
-		private String C;
-		private String E;
-		
-		public Cell(int X, int Y, boolean V, String C, String E) {
-            this.X = X;
-            this.Y = Y;
-            this.V = V;
-            this.C = C;
-            this.E = E;
-        }
-		
-		// getter setters
-	
-	    public void setterX(int x)
-	    {
-	    	X = x;
-	    }
-	    
-	    public void setterY(int y)
-	    {
-	    	Y = y;
-	    }
-	    
-	    public void setterV(Boolean v)
-	    {
-	    	V = v;
-	    }
-	    
-	    public void setterC(String c)
-	    {
-	    	C = c;
-	    }
-	    
-	    public void setterE(String e)
-	    {
-	    	E = e;
-	    }
-	    
-	    public int getterX()
-	    {
-	    	return X;
-	    }
-	    
-	    public int getterY()
-	    {
-	    	return Y;
-	    }
-	    
-	    public boolean getterV()
-	    {
-	    	return V;
-	    }
-	    
-	    public String getterC()
-	    {
-	    	return C;
-	    }
-	    
-	    public String getterE()
-	    {
-	    	return E;
-	    }
+    
+    public interface MapCell {
+    	void setterX(int x);
+    	void setterY(int y);
+    	void setterV(boolean v);
+    	void setterC(String c);
+    	void setterE(String e);
+        int getterX();
+        int getterY();
+        boolean getterV();
+        String getterC();
+        String getterE();
     }
     
     // Static inner Builder class
     public static class MapBuilder {
         private int width, height;
         private List<List<Cell>> cells = new ArrayList<>();
-        
+
         public MapBuilder fromMap(Map existingMap) {
             this.width = existingMap.width;
             this.height = existingMap.height;

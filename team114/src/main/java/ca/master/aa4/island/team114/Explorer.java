@@ -22,14 +22,16 @@ public class Explorer implements IExplorerRaid {
     private int headingCount = 0;
     private int visitedCount = 0;
     private int boundaryCount = 0;
+    private Integer batteryLevel = 0;
     
     Map M;
     
-//    private Drone D = new Drone();
+    private DroneMovement DM = new DroneMovement();
     
 //    private Drone D = DroneFactory.createDrone(0, 0, "", 0);
     
     private Drone D;
+    
     
     public Explorer()
     {
@@ -68,7 +70,7 @@ public class Explorer implements IExplorerRaid {
         JSONObject info = new JSONObject(new JSONTokener(new StringReader(s)));
         logger.info("** Initialization info:\n {}",info.toString(2));
         String direction = info.getString("heading");
-        Integer batteryLevel = info.getInt("budget");
+        batteryLevel = info.getInt("budget");
         logger.info("The drone is facing {}", direction);
         logger.info("Battery level is {}", batteryLevel);
 
@@ -91,15 +93,15 @@ public class Explorer implements IExplorerRaid {
     	
     	else if (actionDecision == 0)
     	{
-    		D.setMovementStrategy(new DroneMovementStrategyEcho());
-            decision = D.performMove("S");
+    		DM.setMovementStrategy(D, new DroneMovementStrategyEcho());
+            decision = DM.performMove("S");
             actionDecision = 1;
     	}
     	
     	else if (actionDecision == 1)
     	{
-            D.setMovementStrategy(new DroneMovementStrategyFly());
-            decision = D.performMove();
+            DM.setMovementStrategy(D, new DroneMovementStrategyFly());
+            decision = DM.performMove();
             actionDecision = 0;
         }
     	
@@ -117,8 +119,8 @@ public class Explorer implements IExplorerRaid {
             	d = "S";
             }
             
-            D.setMovementStrategy(new DroneMovementStrategyHeading());
-            decision = D.performMove(d);
+            DM.setMovementStrategy(D, new DroneMovementStrategyHeading());
+            decision = DM.performMove(d);
             headingCount++;
             
             if (headingCount == 3)
@@ -135,10 +137,10 @@ public class Explorer implements IExplorerRaid {
     	
     	else if (actionDecision == 3)
     	{
-    		D.setMovementStrategy(new DroneMovementStrategyScan());
-            decision = D.performMove();
+    		DM.setMovementStrategy(D, new DroneMovementStrategyScan());
+            decision = DM.performMove();
 
-            Map.Cell C = M.getCell(D.getterX(), D.getterY());            
+            Map.MapCell C = M.getCell(D.getterX(), D.getterY());            
             C.setterV(true);
 //            M[D.getterX()][D.getterY()].setterV(true);
             actionDecision = 2;
@@ -148,22 +150,22 @@ public class Explorer implements IExplorerRaid {
     	
     	else if (actionDecision == 4)
     	{
-            D.setMovementStrategy(new DroneMovementStrategyEcho());
-            decision = D.performMove(D.nextDirection("echo", D.getterH()));
+            DM.setMovementStrategy(D, new DroneMovementStrategyEcho());
+            decision = DM.performMove(D.nextDirection("echo", D.getterH()));
             actionDecision = 5;
     	}
     	
     	else if (actionDecision == 5)
     	{
-    		D.setMovementStrategy(new DroneMovementStrategyFly());
-            decision = D.performMove();
+    		DM.setMovementStrategy(D, new DroneMovementStrategyFly());
+            decision = DM.performMove();
             actionDecision = 7;
     	}
     	
     	else if (actionDecision == 6)
     	{
-            D.setMovementStrategy(new DroneMovementStrategyHeading());
-            decision = D.performMove(D.nextDirection("heading", D.getterH()));
+            DM.setMovementStrategy(D, new DroneMovementStrategyHeading());
+            decision = DM.performMove(D.nextDirection("heading", D.getterH()));
             headingCount++;
             
             if (headingCount == 3)
@@ -175,9 +177,9 @@ public class Explorer implements IExplorerRaid {
     	
     	else if (actionDecision == 7)
     	{
-    		D.setMovementStrategy(new DroneMovementStrategyScan());
-            decision = D.performMove();
-            Map.Cell C = M.getCell(D.getterX(), D.getterY());
+    		DM.setMovementStrategy(D, new DroneMovementStrategyScan());
+            decision = DM.performMove();
+            Map.MapCell C = M.getCell(D.getterX(), D.getterY());
             
             if (C.getterV() == true)
             {
@@ -219,6 +221,8 @@ public class Explorer implements IExplorerRaid {
         logger.info("** Response received:\n"+response.toString(2));
         Integer cost = response.getInt("cost");
         logger.info("The cost of the action was {}", cost);
+        batteryLevel -= cost; 
+        logger.info("Battery level is {}", batteryLevel);
         String status = response.getString("status");
         logger.info("The status of the drone is {}", status);
         JSONObject extraInfo = response.getJSONObject("extras");
@@ -271,7 +275,7 @@ public class Explorer implements IExplorerRaid {
 	        	for (int x = 0; x < creeksArray.length(); x++)
 	        	{
 	        		String creek = creeksArray.getString(x);
-	        		Map.Cell C = M.getCell(D.getterX(), D.getterY());
+	        		Map.MapCell C = M.getCell(D.getterX(), D.getterY());
 	                C.setterC(creek);
 	                C.setterX(D.getterX());
 	                C.setterY(D.getterY());
@@ -289,7 +293,7 @@ public class Explorer implements IExplorerRaid {
 	        	for (int x = 0; x < sitesArray.length(); x++)
 	        	{
 	        		String sites = sitesArray.getString(x);
-	        		Map.Cell C = M.getCell(D.getterX(), D.getterY());
+	        		Map.MapCell C = M.getCell(D.getterX(), D.getterY());
 	        		C.setterC(sites);
 	                C.setterX(D.getterX());
 	                C.setterY(D.getterY());
@@ -324,7 +328,7 @@ public class Explorer implements IExplorerRaid {
     	{
             for (int j = 0; j < 52; j++)
             {
-            	Map.Cell C = M.getCell(i, j);
+            	Map.MapCell C = M.getCell(i, j);
                 if (C.getterE() != "")
                 {        
                 	X = C.getterX();
@@ -338,7 +342,7 @@ public class Explorer implements IExplorerRaid {
         {
             for (int j = 0; j < 52; j++)
             {
-            	Map.Cell C = M.getCell(i, j);
+            	Map.MapCell C = M.getCell(i, j);
             	if (C.getterC() != "")
             	{
             		double distance = Math.abs(X - i) + Math.abs(Y - j);
@@ -353,7 +357,7 @@ public class Explorer implements IExplorerRaid {
             }
         }
         
-        Map.Cell C = M.getCell(closestPointIndices[0], closestPointIndices[1]);
+        Map.MapCell C = M.getCell(closestPointIndices[0], closestPointIndices[1]);
         logger.info("The nearest creek to the emergency site is {} ", C.getterC());
 
         return C.getterC();
