@@ -7,7 +7,7 @@ import java.io.File;
 public class Runner {
 
     public static void main(String[] args) {
-    	String filename = "maps/map03.json";
+    	String filename = "maps/map.json";
         try {
             run(Explorer.class)
                     .exploring(new File(filename))

@@ -18,6 +18,7 @@ public class Explorer implements IExplorerRaid {
     private int actionDecision = 0;
     private boolean onFound = false;
     private boolean onRange = false;
+    private boolean oneStep = false;
     private int creekCount = 0;
     private int headingCount = 0;
     private int visitedCount = 0;
@@ -38,19 +39,21 @@ public class Explorer implements IExplorerRaid {
     	this.D = Drone.getInstance();
     	
     	M = new Map.MapBuilder()
-                .width(52)
-                .height(52)
+                .width(53)
+                .height(53)
                 .build();
 
-		for (int y = 0; y < 52; y++)
+		for (int y = 0; y < 53; y++)
 		{
-		    for (int x = 0; x < 52; x++)
+		    for (int x = 0; x < 53; x++)
 		    {
 		        M = new Map.MapBuilder()
 		                     .fromMap(M)
 		                     .addCell(x, y, false, "", "")
-		                     .build();
+		                     .build();	        	
 		    }
+		    
+		    onRange = false;
 		}
     	
 //    	this.M = new Map[52][52];
@@ -112,11 +115,18 @@ public class Explorer implements IExplorerRaid {
             if (headingCount == 1)
             {
             	d = "W";
+            	D.setterX(D.getterX() - 1);
+            	D.setterY(D.getterY() + 1);
             }
-            	
+            		
             else
             {
             	d = "S";
+            	D.setterY(D.getterY() + 1);
+            	if (headingCount == 0)
+            		D.setterX(D.getterX() + 1);
+            	else
+            		D.setterX(D.getterX() - 1);
             }
             
             DM.setMovementStrategy(D, new DroneMovementStrategyHeading());
@@ -179,6 +189,7 @@ public class Explorer implements IExplorerRaid {
     	{
     		DM.setMovementStrategy(D, new DroneMovementStrategyScan());
             decision = DM.performMove();
+            logger.info("** CELL SIZE: {} {}", D.getterX(), D.getterY());
             Map.MapCell C = M.getCell(D.getterX(), D.getterY());
             
             if (C.getterV() == true)
@@ -232,10 +243,16 @@ public class Explorer implements IExplorerRaid {
         {
             String found = extraInfo.getString("found");
             
-            if (found.equals("GROUND") && !onFound)
+            if (found.equals("GROUND") && !oneStep)
+            {
+            	actionDecision = 1;
+            	oneStep = true;
+            }
+            
+            else if (found.equals("GROUND") && !onFound)
             {
             	onFound = true;
-            	actionDecision = 2;            		
+            	actionDecision = 2;
             }
             
             else if (found.equals("GROUND") && onFound)
