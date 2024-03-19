@@ -3,14 +3,14 @@ package ca.master.aa4.island.team114;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+//import org.apache.logging.log4j.LogManager;
+//import org.apache.logging.log4j.Logger;
 
 public class Map {
     private int width, height;
     private List<List<Cell>> cells;
     
-    private final Logger logger = LogManager.getLogger();
+    //private final Logger logger = LogManager.getLogger();
 
     // Private constructor to prevent instantiation without builder
     private Map(int width, int height, List<List<Cell>> cells) {

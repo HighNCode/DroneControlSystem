@@ -303,15 +303,16 @@ public class Explorer implements IExplorerRaid {
 	        	}
 	        }
 	        
-	        else if (extraInfo.has("sites"))
+	        if (extraInfo.has("sites"))
 	        {
 	        	JSONArray sitesArray = extraInfo.getJSONArray("sites");
+	        	
 	
 	        	for (int x = 0; x < sitesArray.length(); x++)
 	        	{
 	        		String sites = sitesArray.getString(x);
 	        		Map.MapCell C = M.getCell(D.getterX(), D.getterY());
-	        		C.setterC(sites);
+	        		C.setterE(sites);
 	                C.setterX(D.getterX());
 	                C.setterY(D.getterY());
 //	        	    M[D.getterX()][D.getterY()].setterE(sites);
@@ -341,28 +342,32 @@ public class Explorer implements IExplorerRaid {
     	int Y = 0;
     	
     	emergencySitesLoop:
-    	for (int i = 0; i < 52; i++)
+    	for (int i = 0; i < 53; i++)
     	{
-            for (int j = 0; j < 52; j++)
+            for (int j = 0; j < 53; j++)
             {
             	Map.MapCell C = M.getCell(i, j);
                 if (C.getterE() != "")
-                {        
-                	X = C.getterX();
-                	Y = C.getterY();
+                {
+                	
+                	X = i;
+                	Y = j;
+                	
                 	break emergencySitesLoop;
                 }
             }
         }
     	
-        for (int i = 0; i < 52; i++)
+        for (int i = 0; i < 53; i++)
         {
-            for (int j = 0; j < 52; j++)
+            for (int j = 0; j < 53; j++)
             {
             	Map.MapCell C = M.getCell(i, j);
             	if (C.getterC() != "")
             	{
             		double distance = Math.abs(X - i) + Math.abs(Y - j);
+            		
+//            		logger.info("creek diistance {} {} {} {} {} {}", C.getterC(), distance, X, i, Y, j);
 
                     if (distance < shortestDistance && distance != 0)
                     { // Exclude the starting point itself
