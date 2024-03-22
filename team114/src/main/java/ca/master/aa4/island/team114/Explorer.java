@@ -26,13 +26,8 @@ public class Explorer implements IExplorerRaid {
     private Integer batteryLevel = 0;
     
     Map M;
-    
     private DroneMovement DM = new DroneMovement();
-    
-//    private Drone D = DroneFactory.createDrone(0, 0, "", 0);
-    
     private Drone D;
-    
     
     public Explorer()
     {
@@ -139,10 +134,10 @@ public class Explorer implements IExplorerRaid {
             	headingCount = 0;
             }
             
-            else
-            {
-            	actionDecision = 3;
-            }
+//            else
+//            {
+//            	actionDecision = 3;
+//            }
         }
     	
     	else if (actionDecision == 3)
@@ -158,68 +153,68 @@ public class Explorer implements IExplorerRaid {
     	
     	// further actions
     	
-    	else if (actionDecision == 4)
-    	{
-            DM.setMovementStrategy(D, new DroneMovementStrategyEcho());
-            decision = DM.performMove(D.nextDirection("echo", D.getterH()));
-            actionDecision = 5;
-    	}
-    	
-    	else if (actionDecision == 5)
-    	{
-    		DM.setMovementStrategy(D, new DroneMovementStrategyFly());
-            decision = DM.performMove();
-            actionDecision = 7;
-    	}
-    	
-    	else if (actionDecision == 6)
-    	{
-            DM.setMovementStrategy(D, new DroneMovementStrategyHeading());
-            decision = DM.performMove(D.nextDirection("heading", D.getterH()));
-            headingCount++;
-            
-            if (headingCount == 3)
-            {
-            	actionDecision = 5;
-            	headingCount = 0;
-            }
-        }
-    	
-    	else if (actionDecision == 7)
-    	{
-    		DM.setMovementStrategy(D, new DroneMovementStrategyScan());
-            decision = DM.performMove();
-            logger.info("** CELL SIZE: {} {}", D.getterX(), D.getterY());
-            Map.MapCell C = M.getCell(D.getterX(), D.getterY());
-            
-            if (C.getterV() == true)
-            {
-            	if (visitedCount == 1)
-            	{
-            		stopFlag = true;
-            	}
-            	
-            	else if (visitedCount == 0)
-            	{
-                	visitedCount = 1;
-                	actionDecision = 4;
-            	}
-            	
-            	else if (visitedCount == 2)
-            	{
-            		visitedCount = 0;
-            		actionDecision = 6;
-            	}
-            }
-            
-            else
-            {
-            	visitedCount = 2;
-                C.setterV(true);
-//            	M[D.getterX()][D.getterY()].setterV(true);
-            	actionDecision = 4;
-            }
-        }
+//    	else if (actionDecision == 4)
+//    	{
+//            DM.setMovementStrategy(D, new DroneMovementStrategyEcho());
+//            decision = DM.performMove(D.nextDirection("echo", D.getterH()));
+//            actionDecision = 5;
+//    	}
+//    	
+//    	else if (actionDecision == 5)
+//    	{
+//    		DM.setMovementStrategy(D, new DroneMovementStrategyFly());
+//            decision = DM.performMove();
+//            actionDecision = 7;
+//    	}
+//    	
+//    	else if (actionDecision == 6)
+//    	{
+//            DM.setMovementStrategy(D, new DroneMovementStrategyHeading());
+//            decision = DM.performMove(D.nextDirection("heading", D.getterH()));
+//            headingCount++;
+//            
+//            if (headingCount == 3)
+//            {
+//            	actionDecision = 5;
+//            	headingCount = 0;
+//            }
+//        }
+//    	
+//    	else if (actionDecision == 7)
+//    	{
+//    		DM.setMovementStrategy(D, new DroneMovementStrategyScan());
+//            decision = DM.performMove();
+//            logger.info("** CELL SIZE: {} {}", D.getterX(), D.getterY());
+//            Map.MapCell C = M.getCell(D.getterX(), D.getterY());
+//            
+//            if (C.getterV() == true)
+//            {
+//            	if (visitedCount == 1)
+//            	{
+//            		stopFlag = true;
+//            	}
+//            	
+//            	else if (visitedCount == 0)
+//            	{
+//                	visitedCount = 1;
+//                	actionDecision = 4;
+//            	}
+//            	
+//            	else if (visitedCount == 2)
+//            	{
+//            		visitedCount = 0;
+//            		actionDecision = 6;
+//            	}
+//            }
+//            
+//            else
+//            {
+//            	visitedCount = 2;
+//                C.setterV(true);
+////            	M[D.getterX()][D.getterY()].setterV(true);
+//            	actionDecision = 4;
+//            }
+//        }
 
         logger.info("** Decision: {}", decision.toString());
         
@@ -322,16 +317,6 @@ public class Explorer implements IExplorerRaid {
 	        	}
 	        }
         }
-        
-//        else if (onFound && extraInfo.has("found"))
-//        {
-//        	String found = extraInfo.getString("found");
-//            
-//            if (found.equals("OUT_OF_RANGE"))
-//            {
-//            	actionDecision = 6;
-//            }
-//        }
     }
 
     @Override
@@ -367,7 +352,7 @@ public class Explorer implements IExplorerRaid {
             	{
             		double distance = Math.abs(X - i) + Math.abs(Y - j);
             		
-//            		logger.info("creek diistance {} {} {} {} {} {}", C.getterC(), distance, X, i, Y, j);
+//            		logger.info("creek distance {} {} {} {} {} {}", C.getterC(), distance, X, i, Y, j);
 
                     if (distance < shortestDistance && distance != 0)
                     { // Exclude the starting point itself
@@ -396,5 +381,4 @@ public class Explorer implements IExplorerRaid {
 //        
 //        return "no creek found";
     }
-
 }

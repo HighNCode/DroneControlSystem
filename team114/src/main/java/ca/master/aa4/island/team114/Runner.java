@@ -7,14 +7,15 @@ import java.io.File;
 public class Runner {
 
     public static void main(String[] args) {
-    	String filename = "maps/map.json";
+        String filename = "maps/map03.json";
         try {
             run(Explorer.class)
                     .exploring(new File(filename))
                     .withSeed(42L)
                     .startingAt(1, 1, "EAST")
-                    .backBefore(50000)
-                    .withCrew(3)
+                    .backBefore(7000)
+                    .withCrew(5)
+                    .collecting(1000, "WOOD")
                     .storingInto("./outputs")
                     .withName("Island")
                     .fire();
