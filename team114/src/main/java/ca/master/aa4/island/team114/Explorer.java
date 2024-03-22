@@ -20,6 +20,7 @@ public class Explorer implements IExplorerRaid {
     private boolean onRange = false;
     private boolean oneStep = false;
     private int creekCount = 0;
+    private int groundRange = 0;
     private int headingCount = 0;
     private int visitedCount = 0;
     private int boundaryCount = 0;
@@ -241,6 +242,7 @@ public class Explorer implements IExplorerRaid {
             if (found.equals("GROUND") && !oneStep)
             {
             	actionDecision = 1;
+            	groundRange = extraInfo.getInt("range");
             	oneStep = true;
             }
             
