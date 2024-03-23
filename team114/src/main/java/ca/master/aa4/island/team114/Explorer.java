@@ -25,9 +25,6 @@ public class Explorer implements IExplorerRaid {
     private int iterationCount = 0;
     private int headingCount = 0;
     
-//    private int visitedCount = 0;
-//    private int boundaryCount = 0;
-    
     private Integer batteryLevel = 0;
     
     Map M;
@@ -148,18 +145,99 @@ public class Explorer implements IExplorerRaid {
     	
     	// further actions
     	
-//    	else if (actionDecision == 3)
-//    	{
-//    		DM.setMovementStrategy(D, new DroneMovementStrategyHeading());
-//            decision = DM.performMove(D.nextDirection("heading", D.getterH(), iterationCount, phaseChanged));
-//            headingCount++;
-//            actionDecision = 4;
-//
-////            Map.MapCell C = M.getCell(D.getterX(), D.getterY());            
-////            C.setterV(true);
-//////            M[D.getterX()][D.getterY()].setterV(true);
-////            actionDecision = 2;
-//        }
+    	else if (actionDecision == 3)
+    	{
+    		String d = "";
+    		
+    		// heading count 0
+    		
+    		if (headingCount == 0 && iterationCount % 2 == 0 && phaseChanged)
+    		{
+				d = "N";
+    			D.setterX(D.getterX() - 1);
+            	D.setterY(D.getterY() - 1);
+            	actionDecision = 4;
+    		}
+    		
+    		else if (headingCount == 0 && iterationCount % 2 != 0 && phaseChanged)
+    		{
+    			d = "S";
+    			D.setterX(D.getterX() - 1);
+            	D.setterY(D.getterY() + 1);
+            	actionDecision = 4;
+    		}
+    		
+    		else if (headingCount == 0 && !phaseChanged)
+    		{
+    			DM.setMovementStrategy(D, new DroneMovementStrategyFly());
+	            decision = DM.performMove();
+	            D.nextDirection("fly", D.getterH(), iterationCount, phaseChanged);
+	            logger.info("** Decision: {}", decision.toString());
+	            phaseChanged = true;
+	            return decision.toString(4);
+    		}
+    		
+    		// heading count 1
+    		
+    		else if (headingCount == 1 && iterationCount % 2 == 0)
+    		{
+    			if (!phaseChanged)
+    			{
+    				d = "S";
+        			D.setterX(D.getterX() + 1);
+                	D.setterY(D.getterY() + 1);
+                	phaseChanged = true;
+    			}
+    			else
+    			{
+    				d = "W";
+        			D.setterX(D.getterX() - 1);
+                	D.setterY(D.getterY() + 1);
+                	phaseChanged = false;
+                	headingCount--;
+    			}
+    		}
+    		
+    		else if (headingCount == 1 && iterationCount % 2 != 0)
+    		{
+    			if (!phaseChanged)
+    			{
+    				d = "N";
+        			D.setterX(D.getterX() + 1);
+                	D.setterY(D.getterY() - 1);
+                	phaseChanged = true;
+    			}
+    			else
+    			{
+    				d = "W";
+        			D.setterX(D.getterX() - 1);
+                	D.setterY(D.getterY() - 1);
+                	phaseChanged = false;
+                	headingCount--;
+    			}
+    		}
+    		
+    		// heading count 2
+    		
+    		else if (headingCount == 2 && iterationCount % 2 == 0)
+    		{
+    			d = "E";
+    			D.setterX(D.getterX() + 1);
+            	D.setterY(D.getterY() - 1);
+            	headingCount--;
+    		}
+    		
+    		else if (headingCount == 2 && iterationCount % 2 != 0)
+    		{
+    			d = "E";
+    			D.setterX(D.getterX() + 1);
+            	D.setterY(D.getterY() + 1);
+            	headingCount--;
+    		}
+    		
+    		DM.setMovementStrategy(D, new DroneMovementStrategyHeading());
+            decision = DM.performMove(d);
+        }
     	
     	else if (actionDecision == 4)
     	{
@@ -172,15 +250,8 @@ public class Explorer implements IExplorerRaid {
             	actionDecision = 6;
     	}
     	
-//    	else if (actionDecision == 4)
-//    	{
-//            DM.setMovementStrategy(D, new DroneMovementStrategyEcho());
-//            decision = DM.performMove("S");
-//            actionDecision = 5;
-//    	}
-    	
     	else if (actionDecision == 5)
-    	{
+    	{   
     		DM.setMovementStrategy(D, new DroneMovementStrategyFly());
             decision = DM.performMove();
             D.nextDirection("fly", D.getterH(), iterationCount, phaseChanged);
@@ -218,7 +289,6 @@ public class Explorer implements IExplorerRaid {
     	{
     		DM.setMovementStrategy(D, new DroneMovementStrategyScan());
             decision = DM.performMove();
-            logger.info("** CELL SIZE: {} {}", D.getterX(), D.getterY());
 //            Map.MapCell C = M.getCell(D.getterX(), D.getterY());
             
 //            if (C.getterV() == true)
@@ -298,21 +368,15 @@ public class Explorer implements IExplorerRaid {
             else if (found.equals("OUT_OF_RANGE") && onRange && headingCount == 0)
             {
             	actionDecision = 6;
-//            	boundaryCount++;
-//            	visitedCount = 0;
             	onRange = false;
-            	logger.info("HELLLOO1");
             }
             
             else if (found.equals("OUT_OF_RANGE") && headingCount > 0)
             {
+            	if (phaseChanged)
+            		stopFlag = true;
             	actionDecision = 3;
-            	phaseChanged = true;
-//            	boundaryCount++;
-//            	visitedCount = 0;
             	onRange = false;
-            	stopFlag = true;
-            	logger.info("HELLLOO2");
             }
         }
         

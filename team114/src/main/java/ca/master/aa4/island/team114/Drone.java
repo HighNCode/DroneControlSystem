@@ -118,9 +118,9 @@ public class Drone {
     			
     			case "W":
     				if (i % 2 == 0)
-    					newDirection = "N";
-    				else
     					newDirection = "S";
+    				else
+    					newDirection = "N";
     			break;
     		}
     	}
@@ -178,14 +178,14 @@ public class Drone {
     			case "W":
     				if (i % 2 == 0)
     				{
-    					newDirection = "N";
-    					Y--;
+    					newDirection = "S";
+    					Y++;
         				X--;
     				}
     				else
     				{
-    					newDirection = "S";
-        				Y++;
+    					newDirection = "N";
+        				Y--;
         				X--;
     				}
     			break;
