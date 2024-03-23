@@ -19,11 +19,15 @@ public class Explorer implements IExplorerRaid {
     private boolean onFound = false;
     private boolean onRange = false;
     private boolean oneStep = false;
+    private boolean phaseChanged = false;
     private int creekCount = 0;
     private int groundRange = 0;
+    private int iterationCount = 0;
     private int headingCount = 0;
-    private int visitedCount = 0;
-    private int boundaryCount = 0;
+    
+//    private int visitedCount = 0;
+//    private int boundaryCount = 0;
+    
     private Integer batteryLevel = 0;
     
     Map M;
@@ -101,6 +105,7 @@ public class Explorer implements IExplorerRaid {
     	{
             DM.setMovementStrategy(D, new DroneMovementStrategyFly());
             decision = DM.performMove();
+            D.nextDirection("fly", D.getterH(), iterationCount, phaseChanged);
             actionDecision = 0;
         }
     	
@@ -131,7 +136,7 @@ public class Explorer implements IExplorerRaid {
             
             if (headingCount == 3)
             {
-            	actionDecision = 7;
+            	actionDecision = 4;
             	headingCount = 0;
             }
             
@@ -141,53 +146,81 @@ public class Explorer implements IExplorerRaid {
 //            }
         }
     	
-    	else if (actionDecision == 3)
-    	{
-    		DM.setMovementStrategy(D, new DroneMovementStrategyScan());
-            decision = DM.performMove();
-
-            Map.MapCell C = M.getCell(D.getterX(), D.getterY());            
-            C.setterV(true);
-//            M[D.getterX()][D.getterY()].setterV(true);
-            actionDecision = 2;
-        }
-    	
     	// further actions
+    	
+//    	else if (actionDecision == 3)
+//    	{
+//    		DM.setMovementStrategy(D, new DroneMovementStrategyHeading());
+//            decision = DM.performMove(D.nextDirection("heading", D.getterH(), iterationCount, phaseChanged));
+//            headingCount++;
+//            actionDecision = 4;
+//
+////            Map.MapCell C = M.getCell(D.getterX(), D.getterY());            
+////            C.setterV(true);
+//////            M[D.getterX()][D.getterY()].setterV(true);
+////            actionDecision = 2;
+//        }
+    	
+    	else if (actionDecision == 4)
+    	{
+            DM.setMovementStrategy(D, new DroneMovementStrategyEcho());
+            decision = DM.performMove(D.nextDirection("echo", D.getterH(), iterationCount, phaseChanged));
+            
+            if (headingCount == 0 || headingCount == 2)
+            	actionDecision = 5;
+            else if (headingCount == 1)
+            	actionDecision = 6;
+    	}
     	
 //    	else if (actionDecision == 4)
 //    	{
 //            DM.setMovementStrategy(D, new DroneMovementStrategyEcho());
-//            decision = DM.performMove(D.nextDirection("echo", D.getterH()));
+//            decision = DM.performMove("S");
 //            actionDecision = 5;
 //    	}
-//    	
-//    	else if (actionDecision == 5)
-//    	{
-//    		DM.setMovementStrategy(D, new DroneMovementStrategyFly());
-//            decision = DM.performMove();
-//            actionDecision = 7;
-//    	}
-//    	
-//    	else if (actionDecision == 6)
-//    	{
-//            DM.setMovementStrategy(D, new DroneMovementStrategyHeading());
-//            decision = DM.performMove(D.nextDirection("heading", D.getterH()));
-//            headingCount++;
-//            
-//            if (headingCount == 3)
+    	
+    	else if (actionDecision == 5)
+    	{
+    		DM.setMovementStrategy(D, new DroneMovementStrategyFly());
+            decision = DM.performMove();
+            D.nextDirection("fly", D.getterH(), iterationCount, phaseChanged);
+            headingCount = 0;
+            
+            if (groundRange > 0)
+            {
+            	groundRange--;
+            }
+            	
+            else if (groundRange == 0)
+				actionDecision = 7;
+    	}
+    	
+    	else if (actionDecision == 6)
+    	{
+            DM.setMovementStrategy(D, new DroneMovementStrategyHeading());
+            decision = DM.performMove(D.nextDirection("heading", D.getterH(), iterationCount, phaseChanged));
+            headingCount++;
+            actionDecision = 4;
+            
+//            if (headingCount == 2)
 //            {
 //            	actionDecision = 5;
 //            	headingCount = 0;
 //            }
-//        }
-//    	
-//    	else if (actionDecision == 7)
-//    	{
-//    		DM.setMovementStrategy(D, new DroneMovementStrategyScan());
-//            decision = DM.performMove();
-//            logger.info("** CELL SIZE: {} {}", D.getterX(), D.getterY());
-//            Map.MapCell C = M.getCell(D.getterX(), D.getterY());
 //            
+//            else
+//            {
+//            	actionDecision = 5;
+//            }
+        }
+    	
+    	else if (actionDecision == 7)
+    	{
+    		DM.setMovementStrategy(D, new DroneMovementStrategyScan());
+            decision = DM.performMove();
+            logger.info("** CELL SIZE: {} {}", D.getterX(), D.getterY());
+//            Map.MapCell C = M.getCell(D.getterX(), D.getterY());
+            
 //            if (C.getterV() == true)
 //            {
 //            	if (visitedCount == 1)
@@ -212,10 +245,9 @@ public class Explorer implements IExplorerRaid {
 //            {
 //            	visitedCount = 2;
 //                C.setterV(true);
-////            	M[D.getterX()][D.getterY()].setterV(true);
 //            	actionDecision = 4;
 //            }
-//        }
+        }
 
         logger.info("** Decision: {}", decision.toString());
         
@@ -242,7 +274,6 @@ public class Explorer implements IExplorerRaid {
             if (found.equals("GROUND") && !oneStep)
             {
             	actionDecision = 1;
-            	groundRange = extraInfo.getInt("range");
             	oneStep = true;
             }
             
@@ -255,33 +286,50 @@ public class Explorer implements IExplorerRaid {
             else if (found.equals("GROUND") && onFound)
             {
             	onRange = true;
+            	groundRange = extraInfo.getInt("range");
+            	
+            	if (headingCount == 2)
+            	{
+            		iterationCount++;
+            		headingCount = 0;
+            	}
             }
             
-            else if (found.equals("OUT_OF_RANGE") && onRange && boundaryCount < 4)
+            else if (found.equals("OUT_OF_RANGE") && onRange && headingCount == 0)
             {
             	actionDecision = 6;
-            	boundaryCount++;
-            	visitedCount = 0;
+//            	boundaryCount++;
+//            	visitedCount = 0;
             	onRange = false;
+            	logger.info("HELLLOO1");
+            }
+            
+            else if (found.equals("OUT_OF_RANGE") && headingCount > 0)
+            {
+            	actionDecision = 3;
+            	phaseChanged = true;
+//            	boundaryCount++;
+//            	visitedCount = 0;
+            	onRange = false;
+            	stopFlag = true;
+            	logger.info("HELLLOO2");
             }
         }
         
         else if (extraInfo.has("biomes"))
         {
-//        	if (!onGround)
-//        	{
-//	        	JSONArray biomesArray = extraInfo.getJSONArray("biomes");
-//	        	
-//	        	for (int x = 0; x < biomesArray.length(); x++)
-//	        	{
-//	        		if (biomesArray.getString(x).equals("BEACH"))
-//	        		{
-//	        			onGround = true;
-//	        			actionDecision = 4;
-//	        		}
-//	        	}
-//        	}
+        	JSONArray biomesArray = extraInfo.getJSONArray("biomes");
         	
+        	if(biomesArray.length() == 1 && biomesArray.getString(0).equals("OCEAN"))
+        	{
+        		actionDecision = 4;
+        	}
+        	
+        	else
+        	{
+        		actionDecision = 5;
+        	}
+        		
 	        if (extraInfo.has("creeks"))
 	        {
 	        	JSONArray creeksArray = extraInfo.getJSONArray("creeks");

@@ -93,7 +93,7 @@ public class Drone {
 		return null;
     }
     
-    public String nextDirection(String a, String d)
+    public String nextDirection(String a, String d, int i, boolean p)
     {
     	String newDirection = d;
     	
@@ -102,19 +102,25 @@ public class Drone {
     		switch(d)
     		{
     			case "N":
-    		    	newDirection = "W";
+    		    	newDirection = "N";
     		    break;
     		    
     			case "E":
-    				newDirection = "N";
+    				if (i % 2 == 0)
+    					newDirection = "N";
+    				else
+    					newDirection = "S";
     		    break;
     		    
     			case "S":
-    				newDirection = "E";
+    				newDirection = "S";
     			break;
     			
     			case "W":
-    				newDirection = "S";
+    				if (i % 2 == 0)
+    					newDirection = "N";
+    				else
+    					newDirection = "S";
     			break;
     		}
     	}
@@ -124,27 +130,64 @@ public class Drone {
     		switch(d)
     		{
     			case "N":
-    				newDirection = "E";
-    				Y--;
-    				X++;
+    				if (p == false)
+    				{
+    					newDirection = "E";
+    					Y--;
+        				X++;
+    				}
+    				else
+    				{
+    					newDirection = "W";
+        				Y--;
+        				X--;
+    				}	
     		    break;
     		    
     			case "E":
-    				newDirection = "S";
-    				Y++;
-    				X++;
+    				if (i % 2 == 0)
+    				{
+    					newDirection = "N";
+    					Y--;
+        				X++;
+    				}
+    					
+    				else
+    				{
+    					newDirection = "S";
+        				Y++;
+        				X++;
+    				}
     		    break;
     		    
     			case "S":
-    				newDirection = "W";
-    				Y++;
-    				X--;
+    				if (p == false)
+    				{
+    					newDirection = "E";
+    					Y++;
+        				X++;
+    				}
+    				else
+    				{
+    					newDirection = "W";
+        				Y++;
+        				X--;
+    				}
     			break;
     			
     			case "W":
-    				newDirection = "N";
-    				Y--;
-    				X--;
+    				if (i % 2 == 0)
+    				{
+    					newDirection = "N";
+    					Y--;
+        				X--;
+    				}
+    				else
+    				{
+    					newDirection = "S";
+        				Y++;
+        				X--;
+    				}
     			break;
     		}
     	}

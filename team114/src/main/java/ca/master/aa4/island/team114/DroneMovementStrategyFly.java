@@ -8,7 +8,6 @@ public class DroneMovementStrategyFly implements DroneMovementStrategy {
     	JSONObject decision = new JSONObject();
     	String action = "fly";
         decision.put("action", action);
-        D.nextDirection(action, D.getterH());
         return decision;
     }
 }
