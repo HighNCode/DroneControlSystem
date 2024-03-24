@@ -84,7 +84,7 @@ public class Explorer implements IExplorerRaid {
     	
     	// stop action
     	
-    	if (stopFlag == true)
+    	if (stopFlag == true || batteryLevel < 30)
     	{
     		decision.put("action", "stop");
     	}
@@ -136,118 +136,15 @@ public class Explorer implements IExplorerRaid {
             	actionDecision = 4;
             	headingCount = 0;
             }
-            
-//            else
-//            {
-//            	actionDecision = 3;
-//            }
-        }
+    	}
     	
     	// further actions
-    	
-//    	else if (actionDecision == 3)
-//    	{
-//    		String d = "";
-//    		
-//    		// heading count 0
-//    		
-//    		if (headingCount == 0 && iterationCount % 2 == 0 && phaseChanged)
-//    		{
-//				d = "N";
-//    			D.setterX(D.getterX() - 1);
-//            	D.setterY(D.getterY() - 1);
-//            	actionDecision = 4;
-//    		}
-//    		
-//    		else if (headingCount == 0 && iterationCount % 2 != 0 && phaseChanged)
-//    		{
-//    			d = "S";
-//    			D.setterX(D.getterX() - 1);
-//            	D.setterY(D.getterY() + 1);
-//            	actionDecision = 4;
-//    		}
-//    		
-//    		else if (headingCount == 0 && !phaseChanged)
-//    		{
-//    			DM.setMovementStrategy(D, new DroneMovementStrategyFly());
-//	            decision = DM.performMove();
-//	            D.nextDirection("fly", D.getterH(), iterationCount, phaseChanged);
-//	            logger.info("** Decision: {}", decision.toString());
-//	            phaseChanged = true;
-//	            return decision.toString(4);
-//    		}
-//    		
-//    		// heading count 1
-//    		
-//    		else if (headingCount == 1 && iterationCount % 2 == 0)
-//    		{
-//    			if (!phaseChanged)
-//    			{
-//    				d = "S";
-//        			D.setterX(D.getterX() + 1);
-//                	D.setterY(D.getterY() + 1);
-//                	phaseChanged = true;
-//    			}
-//    			else
-//    			{
-//    				d = "W";
-//        			D.setterX(D.getterX() - 1);
-//                	D.setterY(D.getterY() + 1);
-//                	phaseChanged = false;
-//                	headingCount--;
-//    			}
-//    		}
-//    		
-//    		else if (headingCount == 1 && iterationCount % 2 != 0)
-//    		{
-//    			if (!phaseChanged)
-//    			{
-//    				d = "N";
-//        			D.setterX(D.getterX() + 1);
-//                	D.setterY(D.getterY() - 1);
-//                	phaseChanged = true;
-//    			}
-//    			else
-//    			{
-//    				d = "W";
-//        			D.setterX(D.getterX() - 1);
-//                	D.setterY(D.getterY() - 1);
-//                	phaseChanged = false;
-//                	headingCount--;
-//    			}
-//    		}
-//    		
-//    		// heading count 2
-//    		
-//    		else if (headingCount == 2 && iterationCount % 2 == 0)
-//    		{
-//    			d = "E";
-//    			D.setterX(D.getterX() + 1);
-//            	D.setterY(D.getterY() - 1);
-//            	headingCount--;
-//    		}
-//    		
-//    		else if (headingCount == 2 && iterationCount % 2 != 0)
-//    		{
-//    			d = "E";
-//    			D.setterX(D.getterX() + 1);
-//            	D.setterY(D.getterY() + 1);
-//            	headingCount--;
-//    		}
-//    		
-//    		DM.setMovementStrategy(D, new DroneMovementStrategyHeading());
-//            decision = DM.performMove(d);
-//        }
     	
     	else if (actionDecision == 4)
     	{
             DM.setMovementStrategy(D, new DroneMovementStrategyEcho());
             decision = DM.performMove(D.nextDirection("echo", D.getterH(), iterationCount, phaseChanged));
-            
-//            if (headingCount == 0 || headingCount == 2)
             actionDecision = 5;
-//            else if (headingCount == 1)
-//            	actionDecision = 6;
     	}
     	
     	else if (actionDecision == 5)
@@ -265,6 +162,11 @@ public class Explorer implements IExplorerRaid {
             else if (groundRange > 0)
             {
             	groundRange--;
+            	if(iterationCount == 2)
+            	{
+            		groundRange = 0;
+            		actionDecision = 7;
+            	}
             }
             	
             else if (groundRange == 0)
@@ -297,53 +199,12 @@ public class Explorer implements IExplorerRaid {
     		}
             
             headingCount++;
-            
-//            actionDecision = 4;
-            
-//            if (headingCount == 2)
-//            {
-//            	actionDecision = 5;
-//            	headingCount = 0;
-//            }
-//            
-//            else
-//            {
-//            	actionDecision = 5;
-//            }
         }
     	
     	else if (actionDecision == 7)
     	{
     		DM.setMovementStrategy(D, new DroneMovementStrategyScan());
             decision = DM.performMove();
-//            Map.MapCell C = M.getCell(D.getterX(), D.getterY());
-            
-//            if (C.getterV() == true)
-//            {
-//            	if (visitedCount == 1)
-//            	{
-//            		stopFlag = true;
-//            	}
-//            	
-//            	else if (visitedCount == 0)
-//            	{
-//                	visitedCount = 1;
-//                	actionDecision = 4;
-//            	}
-//            	
-//            	else if (visitedCount == 2)
-//            	{
-//            		visitedCount = 0;
-//            		actionDecision = 6;
-//            	}
-//            }
-//            
-//            else
-//            {
-//            	visitedCount = 2;
-//                C.setterV(true);
-//            	actionDecision = 4;
-//            }
         }
 
         logger.info("** Decision: {}", decision.toString());
@@ -395,10 +256,7 @@ public class Explorer implements IExplorerRaid {
             
             else if (found.equals("OUT_OF_RANGE") && headingCount > 0)
             {
-//            	if (phaseChanged)
         		stopFlag = true;
-//            	actionDecision = 3;
-//            	onRange = false;
             }
         }
         
@@ -410,11 +268,7 @@ public class Explorer implements IExplorerRaid {
         	
         	for (int x = 0; x < biomesArray.length(); x++)
 	        	if(biomesArray.getString(x).equals("OCEAN") || D.getterY() == 49 || D.getterY() == 3)
-	        	{
-//	        		logger.info("** HEADING COUNT: {} {}", D.getterX(), D.getterY());
 	        		impFlag = true;
-	        	}
-	        		
         	
         	if (impFlag)
         		actionDecision = 4;
@@ -432,9 +286,6 @@ public class Explorer implements IExplorerRaid {
 	                C.setterC(creek);
 	                C.setterX(D.getterX());
 	                C.setterY(D.getterY());
-//	        	    M[D.getterX()][D.getterY()].setterC(creek);
-//	        	    M[D.getterX()][D.getterY()].setterX(D.getterX());
-//	        	    M[D.getterX()][D.getterY()].setterY(D.getterY());
 	        	    creekCount++;
 	        	}
 	        }
@@ -451,9 +302,6 @@ public class Explorer implements IExplorerRaid {
 	        		C.setterE(sites);
 	                C.setterX(D.getterX());
 	                C.setterY(D.getterY());
-//	        	    M[D.getterX()][D.getterY()].setterE(sites);
-//	        	    M[D.getterX()][D.getterY()].setterX(D.getterX());
-//	        	    M[D.getterX()][D.getterY()].setterY(D.getterY());
 	        	    creekCount++;
 	        	}
 	        }
@@ -492,8 +340,6 @@ public class Explorer implements IExplorerRaid {
             	if (C.getterC() != "")
             	{
             		double distance = Math.abs(X - i) + Math.abs(Y - j);
-            		
-//            		logger.info("creek distance {} {} {} {} {} {}", C.getterC(), distance, X, i, Y, j);
 
                     if (distance < shortestDistance && distance != 0)
                     { // Exclude the starting point itself
@@ -509,17 +355,5 @@ public class Explorer implements IExplorerRaid {
         logger.info("The nearest creek to the emergency site is {} ", C.getterC());
 
         return C.getterC();
-//        // Assuming M is a 2D array you want to print, with its declaration available in the class
-//        for (int i = 0; i < 52; i++)
-//        { // Assuming M.length is the length of the first dimension
-//            StringBuilder sb = new StringBuilder(); // Create a StringBuilder to concatenate the row elements
-//            for (int j = 0; j < 52; j++)
-//            { // Assuming M[i].length is the length of the second dimension
-//                sb.append((M[i][j]).getterC()).append(" "); // Append each element of the 2D array and a space
-//            }
-//            logger.info(sb.toString()); // Log the entire row
-//        }
-//        
-//        return "no creek found";
     }
 }
