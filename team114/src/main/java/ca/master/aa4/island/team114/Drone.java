@@ -105,23 +105,23 @@ public class Drone {
     		    	newDirection = "N";
     		    break;
     		    
-    			case "E":
-    				if (i % 2 == 0)
-    					newDirection = "N";
-    				else
-    					newDirection = "S";
-    		    break;
+//    			case "E":
+//    				if (i % 2 == 0)
+//    					newDirection = "N";
+//    				else
+//    					newDirection = "S";
+//    		    break;
     		    
     			case "S":
     				newDirection = "S";
     			break;
     			
-    			case "W":
-    				if (i % 2 == 0)
-    					newDirection = "S";
-    				else
-    					newDirection = "N";
-    			break;
+//    			case "W":
+//    				if (i % 2 == 0)
+//    					newDirection = "S";
+//    				else
+//    					newDirection = "N";
+//    			break;
     		}
     	}
     	
@@ -130,18 +130,18 @@ public class Drone {
     		switch(d)
     		{
     			case "N":
-    				if (p == false)
+    				if (p)
+    				{
+    					newDirection = "W";
+    					Y--;
+        				X--;
+    				}
+    				else
     				{
     					newDirection = "E";
     					Y--;
         				X++;
     				}
-    				else
-    				{
-    					newDirection = "W";
-        				Y--;
-        				X--;
-    				}	
     		    break;
     		    
     			case "E":
@@ -161,17 +161,17 @@ public class Drone {
     		    break;
     		    
     			case "S":
-    				if (p == false)
+    				if (p)
+    				{
+    					newDirection = "W";
+    					Y++;
+        				X--;
+    				}
+    				else
     				{
     					newDirection = "E";
     					Y++;
         				X++;
-    				}
-    				else
-    				{
-    					newDirection = "W";
-        				Y++;
-        				X--;
     				}
     			break;
     			

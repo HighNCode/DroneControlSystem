@@ -145,109 +145,109 @@ public class Explorer implements IExplorerRaid {
     	
     	// further actions
     	
-    	else if (actionDecision == 3)
-    	{
-    		String d = "";
-    		
-    		// heading count 0
-    		
-    		if (headingCount == 0 && iterationCount % 2 == 0 && phaseChanged)
-    		{
-				d = "N";
-    			D.setterX(D.getterX() - 1);
-            	D.setterY(D.getterY() - 1);
-            	actionDecision = 4;
-    		}
-    		
-    		else if (headingCount == 0 && iterationCount % 2 != 0 && phaseChanged)
-    		{
-    			d = "S";
-    			D.setterX(D.getterX() - 1);
-            	D.setterY(D.getterY() + 1);
-            	actionDecision = 4;
-    		}
-    		
-    		else if (headingCount == 0 && !phaseChanged)
-    		{
-    			DM.setMovementStrategy(D, new DroneMovementStrategyFly());
-	            decision = DM.performMove();
-	            D.nextDirection("fly", D.getterH(), iterationCount, phaseChanged);
-	            logger.info("** Decision: {}", decision.toString());
-	            phaseChanged = true;
-	            return decision.toString(4);
-    		}
-    		
-    		// heading count 1
-    		
-    		else if (headingCount == 1 && iterationCount % 2 == 0)
-    		{
-    			if (!phaseChanged)
-    			{
-    				d = "S";
-        			D.setterX(D.getterX() + 1);
-                	D.setterY(D.getterY() + 1);
-                	phaseChanged = true;
-    			}
-    			else
-    			{
-    				d = "W";
-        			D.setterX(D.getterX() - 1);
-                	D.setterY(D.getterY() + 1);
-                	phaseChanged = false;
-                	headingCount--;
-    			}
-    		}
-    		
-    		else if (headingCount == 1 && iterationCount % 2 != 0)
-    		{
-    			if (!phaseChanged)
-    			{
-    				d = "N";
-        			D.setterX(D.getterX() + 1);
-                	D.setterY(D.getterY() - 1);
-                	phaseChanged = true;
-    			}
-    			else
-    			{
-    				d = "W";
-        			D.setterX(D.getterX() - 1);
-                	D.setterY(D.getterY() - 1);
-                	phaseChanged = false;
-                	headingCount--;
-    			}
-    		}
-    		
-    		// heading count 2
-    		
-    		else if (headingCount == 2 && iterationCount % 2 == 0)
-    		{
-    			d = "E";
-    			D.setterX(D.getterX() + 1);
-            	D.setterY(D.getterY() - 1);
-            	headingCount--;
-    		}
-    		
-    		else if (headingCount == 2 && iterationCount % 2 != 0)
-    		{
-    			d = "E";
-    			D.setterX(D.getterX() + 1);
-            	D.setterY(D.getterY() + 1);
-            	headingCount--;
-    		}
-    		
-    		DM.setMovementStrategy(D, new DroneMovementStrategyHeading());
-            decision = DM.performMove(d);
-        }
+//    	else if (actionDecision == 3)
+//    	{
+//    		String d = "";
+//    		
+//    		// heading count 0
+//    		
+//    		if (headingCount == 0 && iterationCount % 2 == 0 && phaseChanged)
+//    		{
+//				d = "N";
+//    			D.setterX(D.getterX() - 1);
+//            	D.setterY(D.getterY() - 1);
+//            	actionDecision = 4;
+//    		}
+//    		
+//    		else if (headingCount == 0 && iterationCount % 2 != 0 && phaseChanged)
+//    		{
+//    			d = "S";
+//    			D.setterX(D.getterX() - 1);
+//            	D.setterY(D.getterY() + 1);
+//            	actionDecision = 4;
+//    		}
+//    		
+//    		else if (headingCount == 0 && !phaseChanged)
+//    		{
+//    			DM.setMovementStrategy(D, new DroneMovementStrategyFly());
+//	            decision = DM.performMove();
+//	            D.nextDirection("fly", D.getterH(), iterationCount, phaseChanged);
+//	            logger.info("** Decision: {}", decision.toString());
+//	            phaseChanged = true;
+//	            return decision.toString(4);
+//    		}
+//    		
+//    		// heading count 1
+//    		
+//    		else if (headingCount == 1 && iterationCount % 2 == 0)
+//    		{
+//    			if (!phaseChanged)
+//    			{
+//    				d = "S";
+//        			D.setterX(D.getterX() + 1);
+//                	D.setterY(D.getterY() + 1);
+//                	phaseChanged = true;
+//    			}
+//    			else
+//    			{
+//    				d = "W";
+//        			D.setterX(D.getterX() - 1);
+//                	D.setterY(D.getterY() + 1);
+//                	phaseChanged = false;
+//                	headingCount--;
+//    			}
+//    		}
+//    		
+//    		else if (headingCount == 1 && iterationCount % 2 != 0)
+//    		{
+//    			if (!phaseChanged)
+//    			{
+//    				d = "N";
+//        			D.setterX(D.getterX() + 1);
+//                	D.setterY(D.getterY() - 1);
+//                	phaseChanged = true;
+//    			}
+//    			else
+//    			{
+//    				d = "W";
+//        			D.setterX(D.getterX() - 1);
+//                	D.setterY(D.getterY() - 1);
+//                	phaseChanged = false;
+//                	headingCount--;
+//    			}
+//    		}
+//    		
+//    		// heading count 2
+//    		
+//    		else if (headingCount == 2 && iterationCount % 2 == 0)
+//    		{
+//    			d = "E";
+//    			D.setterX(D.getterX() + 1);
+//            	D.setterY(D.getterY() - 1);
+//            	headingCount--;
+//    		}
+//    		
+//    		else if (headingCount == 2 && iterationCount % 2 != 0)
+//    		{
+//    			d = "E";
+//    			D.setterX(D.getterX() + 1);
+//            	D.setterY(D.getterY() + 1);
+//            	headingCount--;
+//    		}
+//    		
+//    		DM.setMovementStrategy(D, new DroneMovementStrategyHeading());
+//            decision = DM.performMove(d);
+//        }
     	
     	else if (actionDecision == 4)
     	{
             DM.setMovementStrategy(D, new DroneMovementStrategyEcho());
             decision = DM.performMove(D.nextDirection("echo", D.getterH(), iterationCount, phaseChanged));
             
-            if (headingCount == 0 || headingCount == 2)
-            	actionDecision = 5;
-            else if (headingCount == 1)
-            	actionDecision = 6;
+//            if (headingCount == 0 || headingCount == 2)
+            actionDecision = 5;
+//            else if (headingCount == 1)
+//            	actionDecision = 6;
     	}
     	
     	else if (actionDecision == 5)
@@ -255,9 +255,14 @@ public class Explorer implements IExplorerRaid {
     		DM.setMovementStrategy(D, new DroneMovementStrategyFly());
             decision = DM.performMove();
             D.nextDirection("fly", D.getterH(), iterationCount, phaseChanged);
-            headingCount = 0;
             
-            if (groundRange > 0)
+            if (phaseChanged)
+            {
+            	actionDecision = 6;
+            	phaseChanged = false;
+            }
+            
+            else if (groundRange > 0)
             {
             	groundRange--;
             }
@@ -268,10 +273,32 @@ public class Explorer implements IExplorerRaid {
     	
     	else if (actionDecision == 6)
     	{
+    		if (headingCount == 0)
+    		{
+    			phaseChanged = true;
+    		}
+    		else if (headingCount == 1)
+    		{
+    			phaseChanged = false;
+    		}
+    		
             DM.setMovementStrategy(D, new DroneMovementStrategyHeading());
             decision = DM.performMove(D.nextDirection("heading", D.getterH(), iterationCount, phaseChanged));
+            
+            if (headingCount == 2)
+    		{
+    			actionDecision = 5;
+        		phaseChanged = true;
+    		}
+    		else if (headingCount == 3)
+    		{
+    			actionDecision = 4;
+    			iterationCount++;
+    		}
+            
             headingCount++;
-            actionDecision = 4;
+            
+//            actionDecision = 4;
             
 //            if (headingCount == 2)
 //            {
@@ -357,12 +384,7 @@ public class Explorer implements IExplorerRaid {
             {
             	onRange = true;
             	groundRange = extraInfo.getInt("range");
-            	
-            	if (headingCount == 2)
-            	{
-            		iterationCount++;
-            		headingCount = 0;
-            	}
+                headingCount = 0;
             }
             
             else if (found.equals("OUT_OF_RANGE") && onRange && headingCount == 0)
@@ -373,10 +395,10 @@ public class Explorer implements IExplorerRaid {
             
             else if (found.equals("OUT_OF_RANGE") && headingCount > 0)
             {
-            	if (phaseChanged)
-            		stopFlag = true;
-            	actionDecision = 3;
-            	onRange = false;
+//            	if (phaseChanged)
+        		stopFlag = true;
+//            	actionDecision = 3;
+//            	onRange = false;
             }
         }
         
@@ -384,15 +406,20 @@ public class Explorer implements IExplorerRaid {
         {
         	JSONArray biomesArray = extraInfo.getJSONArray("biomes");
         	
-        	if(biomesArray.length() == 1 && biomesArray.getString(0).equals("OCEAN"))
-        	{
-        		actionDecision = 4;
-        	}
+        	boolean impFlag = false;
         	
+        	for (int x = 0; x < biomesArray.length(); x++)
+	        	if(biomesArray.getString(x).equals("OCEAN") || D.getterY() == 49 || D.getterY() == 3)
+	        	{
+//	        		logger.info("** HEADING COUNT: {} {}", D.getterX(), D.getterY());
+	        		impFlag = true;
+	        	}
+	        		
+        	
+        	if (impFlag)
+        		actionDecision = 4;
         	else
-        	{
         		actionDecision = 5;
-        	}
         		
 	        if (extraInfo.has("creeks"))
 	        {
