@@ -19,6 +19,21 @@ public class Map {
         this.cells = cells;
     }
     
+    int getterWidth()
+    {
+    	return width;
+    }
+    
+    int getterHeight()
+    {
+    	return height;
+    }
+    
+    List<List<Cell>> getterCells()
+    {
+    	return cells;
+    }
+    
     public interface MapCell {
     	void setterX(int x);
     	void setterY(int y);
